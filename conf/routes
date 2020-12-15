@@ -1,0 +1,15 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# the page you get when you go to http://localhost:9000/
+GET     /                                             controllers.HomeController.index
+
+GET     /connect                                      controllers.UserWebSocketController.connect
+
+POST    /broadcast                                    controllers.TestController.broadcast
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)
+
