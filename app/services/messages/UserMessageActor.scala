@@ -19,7 +19,7 @@ abstract class UserMessageActor extends EntityActor {
   override def isIdle: Boolean = sockets.routees.isEmpty
 
   override def receive: Receive = ({
-    case Envelope(_, c: UserMessageActor.Connect) =>
+    case Envelope(id:String, c: UserMessageActor.Connect) =>
       log.debug(s"Socket ${c.socket.path} connected")
       sockets = sockets.addRoutee(c.socket)
       context watch c.socket

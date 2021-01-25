@@ -4,6 +4,11 @@
 
 <h1 class="text-primary" style="font-size:24px;padding-bottom:1.5em;">Play WebSocket</h1>
 
+<div style="margin-bottom: 20px; width: 200px; ">
+    <input id="user-input" type="text" class="form-control" placeholder="user id or nickname " aria-label="user id or nickname"
+           aria-describedby="button-addon2">
+</div>
+
 <div id="ws-config" style="float: left; width: 300px;">
 
     <strong>Connect:</strong>
@@ -40,6 +45,7 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
+    var userId;
     var wsUrl;
     var webSocket;
     var messageInput;
@@ -58,6 +64,14 @@
         if ($.trim(wsUrlInput) == "") {
             wsUrl = "ws://localhost:9000/connect";
             $("#connect-input").val(wsUrl);
+        }
+
+        userIdInput = $("#user-input").val();
+        // put focus back in the textarea
+
+        if ($.trim(wsUrlInput) == "") {
+            userId = 25500 + Math.ceil(Math.random()*10);
+            $("#user-input").val(userId);
         }
     }
 
@@ -175,7 +189,7 @@
         if ($.trim(wsUrlInput) == "") {
             alert("ws url can't be null");
         } else {
-            connect(wsUrlInput);
+            connect(wsUrlInput + "?userId=" + userId);
         }
     });
 

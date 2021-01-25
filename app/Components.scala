@@ -29,7 +29,7 @@ class Components(context: Context)
 
   // controllers
   val homeController   = new HomeController(controllerComponents)
-  val socketController = new UserWebSocketController(controllerComponents)(actorSystem, materializer, executionContext)
+  val socketController = new WebSocketController(controllerComponents)(actorSystem, materializer, executionContext)
   val testController   = new TestController(controllerComponents)(actorSystem)
 
   override def router: Router = new Routes(httpErrorHandler, homeController, socketController, testController, assets)

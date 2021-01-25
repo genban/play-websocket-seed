@@ -4,7 +4,6 @@ import akka.actor._
 import akka.stream._
 import play.api.Logger
 import play.api.libs.json._
-import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
 import sockets._
@@ -13,14 +12,12 @@ import scala.concurrent._
 import scala.util.Try
 
 /**
- * Provides a websocket controller.
+ * Provides a WebSocket controller.
  *
  * Created by peixiaobin on 2020/11/24.
  */
-class UserWebSocketController(cc: ControllerComponents)(
-  implicit system: ActorSystem,
-  mat: Materializer,
-  ec: ExecutionContext
+class WebSocketController(cc: ControllerComponents)(
+  implicit system: ActorSystem, mat: Materializer, ec: ExecutionContext
 ) extends AbstractController(cc) {
 
   val logger: Logger = play.api.Logger(getClass)
@@ -34,16 +31,19 @@ class UserWebSocketController(cc: ControllerComponents)(
    * Creates a websocket.  `accept` is preferable here because it returns a
    * Future[Flow], which is required internally.
    *
+   * Configuring WebSocket Frame Length  -Dwebsocket.frame.maxLength=64k
    * @return a fully realized websocket.
    */
   def connect: WebSocket = WebSocket.acceptOrResult[Try[Payload], Payload] { request =>
-    logger.info(s"'ws' ${request.id} function is called")
     Future {
-      WebSocketFlow.actorRef[Try[Payload], Payload](out => UserWebSocket.props(request.id.toString, out))
+      request.getQueryString("userId") match {
+        case Some(uid) => WebSocketFlow.actorRef[Try[Payload], Payload](out => UserWebSocket.props(uid, out), name = Some(uid))
+        case None      => throw new Exception("No auth")
+      }
     }.map(flow => Right(flow)).recover {
       case e: Exception =>
-        logger.error("Cannot create websocket", e)
-        Left(BadRequest(Json.obj("error" -> "Cannot create websocket")))
+        logger.error("Cannot connection websocket", e)
+        Left(BadRequest(Json.obj("error" -> "Cannot connection websocket")))
     }
   }
 }

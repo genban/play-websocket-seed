@@ -17,6 +17,7 @@ object NotificationActor extends AkkaClusterSharding {
 
 class NotificationActor extends UserMessageActor {
 
+  println(self.path)
   override def receive: Receive = ({
 
     case Envelope(_, notify: String) =>

@@ -6,7 +6,7 @@
 # the page you get when you go to http://localhost:9000/
 GET     /                                             controllers.HomeController.index
 
-GET     /connect                                      controllers.UserWebSocketController.connect
+GET     /connect                                      controllers.WebSocketController.connect
 
 POST    /broadcast                                    controllers.TestController.broadcast
 
